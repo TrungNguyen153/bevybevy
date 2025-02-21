@@ -1,0 +1,10 @@
+{
+    "spawn": (
+        keyframes: KeyframesRange((start: 0, end: 8)),
+        duration: 0.8,
+    ),
+    "fly": (
+        keyframes: KeyframesRange((start: 8, end: 16)),
+        duration: 0.8,
+    ),
+}

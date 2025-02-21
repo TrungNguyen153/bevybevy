@@ -1,0 +1,13 @@
+[package]
+name = "triple-a"
+version = "0.1.0"
+edition = "2024"
+
+[dependencies]
+bevy = { workspace = true, features = [] }
+bevy_asset_loader = { workspace = true, features = ["2d"] }
+bevy_trickfilm.workspace = true
+bevy_kira_audio.workspace = true
+bevy_ecs_ldtk = { workspace = true, features = ["atlas"] }
+avian2d.workspace = true
+rand.workspace = true
