@@ -36,6 +36,7 @@ fn spawn_player(mut commands: Commands, assets: Res<GameAssets>) {
         },
         Transform::from_translation(PLAYER_SPAWN_POS).with_scale(Vec3::splat(2.0)),
         Health {
+            max_hp: 100.,
             hp: 100.,
             last_hp: 100.,
         },
