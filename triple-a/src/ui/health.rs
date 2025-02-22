@@ -14,6 +14,7 @@ impl Plugin for HealthPlugin {
                 (
                     create_health_bars.before(update_health_bars),
                     update_health_bars,
+                    spawn_damage_text,
                     animate_damage_text,
                 ),
             );
@@ -29,19 +30,11 @@ const MISSING_HEALTH_COLOR: Color = Color::BLACK;
 
 fn create_health_bars(
     mut commands: Commands,
-    q_hp: Query<(Entity, &Transform), Added<Health>>,
+    q_hp: Query<Entity, Added<Health>>,
     mut meshes: ResMut<Assets<Mesh>>,
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
-    for (ent, t) in &q_hp {
-        commands.spawn(DamageTextDisplay::new_bundle(t.translation, 1000., 1.));
-        commands.spawn(DamageTextDisplay::new_bundle(t.translation, 500., 1.));
-        commands.spawn(DamageTextDisplay::new_bundle(t.translation, 200., 1.));
-        commands.spawn(DamageTextDisplay::new_bundle(t.translation, 10., 1.));
-        commands.spawn(DamageTextDisplay::new_bundle(t.translation, 300., 1.));
-        commands.spawn(DamageTextDisplay::new_bundle(t.translation, 700., 1.));
-        commands.spawn(DamageTextDisplay::new_bundle(t.translation, 40., 1.));
-        commands.spawn(DamageTextDisplay::new_bundle(t.translation, 20., 1.));
+    for ent in &q_hp {
         println!("Welcom");
         let mut ent = commands.entity(ent);
         ent.with_children(|p| {
@@ -135,5 +128,21 @@ fn animate_damage_text(
         let changed_y = dmg_timer.display_timer.fraction() * MAX_MOVE_Y;
         trans.translation.y += changed_y;
         println!("Update dmg text: {changed_y}");
+    }
+}
+
+// better use event
+// for special kind damage
+// store more info damamge
+// like:
+// crit dmg
+// strong dmg
+fn spawn_damage_text(mut command: Commands, q_hp: Query<(&Health, &Transform), Changed<Health>>) {
+    for (hp, trans) in &q_hp {
+        command.spawn(DamageTextDisplay::new_bundle(
+            trans.translation,
+            hp.last_changed(),
+            1.,
+        ));
     }
 }
