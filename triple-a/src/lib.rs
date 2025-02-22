@@ -2,7 +2,11 @@
 #![feature(let_chains)]
 
 mod assets;
+pub mod components;
+pub mod events;
+pub mod player;
 mod ui;
+pub mod world_map;
 
 pub use assets::GameAssets;
 
@@ -55,5 +59,12 @@ pub fn create_game() {
                 .continue_to_state(GameState::Gaming)
                 .load_collection::<GameAssets>(),
         )
+        .add_plugins((
+            components::ComponentPlugin,
+            events::EventPlugin,
+            ui::UiPlugin,
+            world_map::WorldMapPlugin,
+            player::PlayerPlugin,
+        ))
         .run();
 }

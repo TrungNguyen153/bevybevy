@@ -3004,6 +3004,15 @@ dependencies = [
 ]
 
 [[package]]
+name = "noisy_bevy"
+version = "0.8.0"
+source = "registry+https://github.com/rust-lang/crates.io-index"
+checksum = "5e24fedeca6003c0d04b916346d386f5a777aee89bf611b3960ab5d64977c165"
+dependencies = [
+ "bevy",
+]
+
+[[package]]
 name = "nom"
 version = "7.1.3"
 source = "registry+https://github.com/rust-lang/crates.io-index"
@@ -4527,6 +4536,7 @@ dependencies = [
  "bevy_ecs_ldtk",
  "bevy_kira_audio",
  "bevy_trickfilm",
+ "noisy_bevy",
  "rand 0.9.0",
 ]
 

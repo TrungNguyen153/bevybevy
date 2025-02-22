@@ -11,3 +11,4 @@ bevy_kira_audio.workspace = true
 bevy_ecs_ldtk = { workspace = true, features = ["atlas"] }
 avian2d.workspace = true
 rand.workspace = true
+noisy_bevy.workspace = true
