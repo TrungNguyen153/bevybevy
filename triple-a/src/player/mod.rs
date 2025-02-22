@@ -1,11 +1,19 @@
+pub mod input;
+
 use bevy::prelude::*;
 
 use crate::{
     GameAssets, GameState,
-    components::{health::Health, sprite_animate::AnimationSpriteIndices},
+    components::{
+        health::Health,
+        movement::{Facing, Velocity},
+        sprite_animate::AnimationSpriteIndices,
+    },
     world_map::CHUNK_SIZE,
 };
 use avian2d::prelude::*;
+
+use self::input::update_player_direction;
 pub const PLAYER_SPAWN_POS: Vec3 = Vec3::new(2.5 * CHUNK_SIZE, 16.0 + 2.5 * CHUNK_SIZE, 0.0);
 pub const PLAYER_HEALTH: f32 = 10.0;
 pub struct PlayerPlugin;
@@ -13,17 +21,28 @@ pub struct PlayerPlugin;
 impl Plugin for PlayerPlugin {
     fn build(&self, app: &mut App) {
         app.register_type::<Player>()
-            .add_systems(OnEnter(GameState::Gaming), spawn_player);
+            .add_systems(OnEnter(GameState::Gaming), spawn_player)
+            .add_systems(
+                Update,
+                update_player_direction.run_if(in_state(GameState::Gaming)),
+            );
     }
 }
 
 #[derive(Component, Reflect, Default)]
-#[require(Health, Sprite, Name, RigidBody(|| RigidBody::Dynamic))]
+#[require(
+    Health,
+    Velocity,
+    Facing,
+    Sprite,
+    Name(|| "LocalPlayer"),
+    RigidBody(|| RigidBody::Dynamic),
+)]
 pub struct Player;
 
 fn spawn_player(mut commands: Commands, assets: Res<GameAssets>) {
     println!("Spawn player");
-    let entity = commands.spawn((
+    commands.spawn((
         Player,
         Sprite {
             image: assets.player_texture.clone(),

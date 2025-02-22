@@ -35,7 +35,6 @@ fn create_health_bars(
     mut materials: ResMut<Assets<ColorMaterial>>,
 ) {
     for ent in &q_hp {
-        println!("Welcom");
         let mut ent = commands.entity(ent);
         ent.with_children(|p| {
             // we have 2 entity here
@@ -116,7 +115,6 @@ fn animate_damage_text(
 
         if dmg_timer.display_timer.just_finished() {
             commands.entity(entity).despawn_recursive();
-            println!("Removed dmg text");
             continue;
         }
 
@@ -127,7 +125,6 @@ fn animate_damage_text(
         const MAX_MOVE_Y: f32 = 1.0;
         let changed_y = dmg_timer.display_timer.fraction() * MAX_MOVE_Y;
         trans.translation.y += changed_y;
-        println!("Update dmg text: {changed_y}");
     }
 }
 
