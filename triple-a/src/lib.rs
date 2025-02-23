@@ -3,6 +3,7 @@
 
 mod assets;
 pub mod components;
+pub mod debug;
 pub mod events;
 pub mod player;
 mod ui;
@@ -14,9 +15,11 @@ use bevy::asset::AssetMetaCheck;
 use bevy::prelude::*;
 use bevy::window::{PresentMode, Window, WindowMode, WindowResolution};
 
+use avian2d::prelude::*;
 use bevy_asset_loader::prelude::*;
-use bevy_ecs_ldtk::LdtkPlugin;
 use bevy_trickfilm::Animation2DPlugin;
+
+use self::debug::mouse_world::MouseWorldPlugin;
 
 #[derive(States, Clone, Eq, PartialEq, Debug, Hash, Default)]
 pub enum GameState {
@@ -50,8 +53,7 @@ pub fn create_game() {
                 })
                 .build(),
             Animation2DPlugin,
-            // LdtkAssetPlugin,
-            LdtkPlugin,
+            PhysicsPlugins::default(),
         ))
         .init_state::<GameState>()
         .add_loading_state(
@@ -65,6 +67,7 @@ pub fn create_game() {
             ui::UiPlugin,
             world_map::WorldMapPlugin,
             player::PlayerPlugin,
+            MouseWorldPlugin,
         ))
         .run();
 }

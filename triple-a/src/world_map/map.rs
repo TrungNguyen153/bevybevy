@@ -1,4 +1,4 @@
-use avian2d::prelude::Collider;
+use avian2d::prelude::*;
 use bevy::prelude::*;
 use bevy::utils::HashSet;
 use bevy_ecs_ldtk::LdtkSettings;
@@ -15,42 +15,55 @@ pub struct MapPlugin;
 
 impl Plugin for MapPlugin {
     fn build(&self, app: &mut App) {
-        app.insert_resource(LdtkSettings {
-            level_spawn_behavior: bevy_ecs_ldtk::LevelSpawnBehavior::UseWorldTranslation {
-                load_level_neighbors: false,
-            },
-            ..default()
-        })
-        .add_systems(
-            OnEnter(GameState::Gaming),
-            (spawn_world_borders, spawn_ldtk_world),
-        )
-        .add_systems(Update, (adjust_chunks).run_if(in_state(GameState::Gaming)));
+        app.add_plugins(LdtkPlugin)
+            .insert_resource(LdtkSettings {
+                level_spawn_behavior: bevy_ecs_ldtk::LevelSpawnBehavior::UseWorldTranslation {
+                    load_level_neighbors: false,
+                },
+                ..default()
+            })
+            .add_systems(
+                OnEnter(GameState::Gaming),
+                (spawn_world_borders, spawn_ldtk_world),
+            )
+            .add_systems(Update, (adjust_chunks).run_if(in_state(GameState::Gaming)));
     }
 }
 
 fn spawn_world_borders(mut commands: Commands) {
     println!("spawn_world_borders");
-    // commands.spawn((
-    //     Collider::cuboid(10.0, 2600.0),
-    //     TransformBundle::from_transform(Transform::from_translation(Vec3::new(0.0, 2600.0, 0.0))),
-    // ));
-    // commands.spawn((
-    //     Collider::cuboid(10.0, 2600.0),
-    //     TransformBundle::from_transform(Transform::from_translation(Vec3::new(
-    //         5120.0, 2600.0, 0.0,
-    //     ))),
-    // ));
-    // commands.spawn((
-    //     Collider::cuboid(2600.0, 10.0),
-    //     TransformBundle::from_transform(Transform::from_translation(Vec3::new(2610.0, 55.0, 0.0))),
-    // ));
-    // commands.spawn((
-    //     Collider::cuboid(2600.0, 10.0),
-    //     TransformBundle::from_transform(Transform::from_translation(Vec3::new(
-    //         2610.0, 5120.0, 0.0,
-    //     ))),
-    // ));
+
+    // left
+    commands.spawn((
+        RigidBody::Static,
+        Collider::rectangle(10.0, 5120.0),
+        GlobalTransform::default(),
+        Transform::from_translation(Vec3::new(0.0, 2600.0, 0.0)),
+    ));
+
+    // right
+    commands.spawn((
+        RigidBody::Static,
+        Collider::rectangle(10.0, 5120.0),
+        GlobalTransform::default(),
+        Transform::from_translation(Vec3::new(5120.0, 2600.0, 0.0)),
+    ));
+
+    // bottom
+    commands.spawn((
+        RigidBody::Static,
+        Collider::rectangle(5120.0, 10.0),
+        GlobalTransform::default(),
+        Transform::from_translation(Vec3::new(2610.0, 55.0, 0.0)),
+    ));
+
+    // top
+    commands.spawn((
+        RigidBody::Static,
+        Collider::rectangle(5120.0, 10.0),
+        GlobalTransform::default(),
+        Transform::from_translation(Vec3::new(2610.0, 5120.0, 0.0)),
+    ));
 }
 
 fn spawn_ldtk_world(mut commands: Commands, assets: Res<GameAssets>) {
