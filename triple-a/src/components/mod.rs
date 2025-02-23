@@ -31,7 +31,10 @@ impl Plugin for ComponentPlugin {
             .register_type::<Facing>()
             .add_systems(
                 Update,
-                (movement::update_position, movement::update_sprite_direction)
+                (
+                    movement::update_linear_velocity,
+                    movement::update_sprite_direction,
+                )
                     .run_if(in_state(GameState::Gaming)),
             );
     }

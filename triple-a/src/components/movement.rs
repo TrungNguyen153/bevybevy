@@ -1,3 +1,4 @@
+use avian2d::prelude::*;
 use bevy::prelude::*;
 
 #[derive(Component, Reflect, Debug, Clone, Default, Deref, DerefMut)]
@@ -21,9 +22,10 @@ impl Velocity {
 #[derive(Component, Reflect, Debug, Clone, Default, Deref, DerefMut)]
 pub struct Facing(pub Vec3);
 
-pub fn update_position(mut q_transform: Query<(&Velocity, &mut Transform)>, time: Res<Time>) {
-    for (v, mut t) in &mut q_transform {
-        t.translation += v.0 * time.delta_secs();
+pub fn update_linear_velocity(mut q_velo: Query<(&Velocity, &mut LinearVelocity)>) {
+    for (v, mut physical_velo) in &mut q_velo {
+        physical_velo.x = v.x;
+        physical_velo.y = v.y;
     }
 }
 

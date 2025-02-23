@@ -6,6 +6,7 @@ pub mod components;
 pub mod debug;
 pub mod events;
 pub mod player;
+pub mod spell;
 mod ui;
 pub mod world_map;
 

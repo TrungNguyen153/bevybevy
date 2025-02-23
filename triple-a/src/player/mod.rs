@@ -14,8 +14,6 @@ use crate::{
 };
 use avian2d::prelude::*;
 
-use self::input::update_player_direction;
-
 pub const PLAYER_SPAWN_POS: Vec3 = Vec3::new(2.5 * CHUNK_SIZE, 16.0 + 2.5 * CHUNK_SIZE, 0.0);
 
 pub struct PlayerPlugin;
@@ -26,7 +24,11 @@ impl Plugin for PlayerPlugin {
             .add_systems(OnEnter(GameState::Gaming), spawn_player)
             .add_systems(
                 Update,
-                update_player_direction.run_if(in_state(GameState::Gaming)),
+                (
+                    input::update_player_direction,
+                    collision::kinematic_player_controller,
+                )
+                    .run_if(in_state(GameState::Gaming)),
             );
     }
 }
@@ -62,7 +64,7 @@ fn spawn_player(mut commands: Commands, assets: Res<GameAssets>) {
             last_hp: 100.,
         },
         AnimationSpriteIndices::new_with_repeat_bundle(0, 5, 11),
-        Collider::circle(4.),
+        Collider::rectangle(4., 4.),
         SweptCcd::default(),
     ));
 }
