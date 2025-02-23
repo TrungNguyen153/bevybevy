@@ -68,6 +68,7 @@ pub fn create_game() {
             ui::UiPlugin,
             world_map::WorldMapPlugin,
             player::PlayerPlugin,
+            spell::SpellPlugin,
             MouseWorldPlugin,
         ))
         .run();

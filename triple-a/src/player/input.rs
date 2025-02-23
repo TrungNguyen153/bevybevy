@@ -12,15 +12,19 @@ pub fn update_player_direction(
 ) {
     for (mut facing, mut velo) in &mut q_player {
         let mut direction = Vec3::ZERO;
+
         if keys.pressed(KeyCode::KeyJ) || keys.pressed(KeyCode::KeyS) {
             direction += Vec3::new(0.0, -1.0, 0.0);
         }
+
         if keys.pressed(KeyCode::KeyK) || keys.pressed(KeyCode::KeyW) {
             direction += Vec3::new(0.0, 1.0, 0.0);
         }
+
         if keys.pressed(KeyCode::KeyF) || keys.pressed(KeyCode::KeyD) {
             direction += Vec3::new(1.0, 0.0, 0.0);
         }
+
         if keys.pressed(KeyCode::KeyA) {
             direction += Vec3::new(-1.0, 0.0, 0.0);
         }

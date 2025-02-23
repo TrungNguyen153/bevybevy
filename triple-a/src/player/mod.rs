@@ -10,6 +10,7 @@ use crate::{
         movement::{Facing, Velocity},
         sprite_animate::AnimationSpriteIndices,
     },
+    spell::SpellCaster,
     world_map::CHUNK_SIZE,
 };
 use avian2d::prelude::*;
@@ -38,6 +39,7 @@ impl Plugin for PlayerPlugin {
     Health,
     Velocity,
     Facing,
+    SpellCaster,
     Sprite,
     Name(|| "LocalPlayer"),
     RigidBody(|| RigidBody::Dynamic),
