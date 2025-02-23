@@ -47,18 +47,6 @@ pub enum DamageType {
     Chaos,
 }
 
-pub trait SpellTrait {
-    fn spell_name(&self) -> String;
-
-    fn spell_timer_mut(&mut self) -> &mut Timer;
-
-    fn base_damage(&self) -> f32;
-
-    fn base_critical_change(&self) -> f32;
-
-    fn damamge_type(&self) -> DamageType;
-}
-
 #[derive(Component, Reflect, Default)]
 pub struct SpellCaster {
     cooldown_pool: HashMap<Spell, Timer>,

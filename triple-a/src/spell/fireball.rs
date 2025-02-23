@@ -63,3 +63,6 @@ pub fn update_fireball(
         }
     }
 }
+
+// TODO
+pub struct CustomFireballShader {}
