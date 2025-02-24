@@ -44,7 +44,7 @@ pub fn spawn_fireball(
             // },
             Sensor,
             Fireball {
-                timelife: Timer::from_seconds(2., TimerMode::Once),
+                timelife: Timer::from_seconds(100., TimerMode::Once),
                 base_damage: 10.,
                 damage_type: DamageType::Fire,
                 critical_change,
@@ -53,8 +53,7 @@ pub fn spawn_fireball(
             LinearVelocity(facing.truncate() * 40.),
             Mesh2d(meshes.add(Rectangle::new(CANVAS_WIDTH, CANVAS_HEIGHT))),
             MeshMaterial2d(materials.add(CustomFireballShader {
-                width: CANVAS_WIDTH,
-                height: CANVAS_HEIGHT,
+                resolution: (CANVAS_WIDTH, CANVAS_HEIGHT).into(),
             })),
             RigidBody::Dynamic,
             Collider::circle(5.),
@@ -82,9 +81,7 @@ pub fn update_fireball(
 #[derive(Asset, TypePath, AsBindGroup, Debug, Clone)]
 pub struct CustomFireballShader {
     #[uniform(0)]
-    width: f32,
-    #[uniform(1)]
-    height: f32,
+    resolution: Vec2,
 }
 const SHADER_ASSET_PATH: &str = "shaders/fireball.wgsl";
 impl Material2d for CustomFireballShader {
@@ -93,6 +90,6 @@ impl Material2d for CustomFireballShader {
     }
 
     fn alpha_mode(&self) -> AlphaMode2d {
-        AlphaMode2d::Mask(0.5)
+        AlphaMode2d::Opaque
     }
 }

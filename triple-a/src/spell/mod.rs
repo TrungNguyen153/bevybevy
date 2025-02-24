@@ -127,7 +127,7 @@ fn spawn_spell_projectiles(
             }
         }
 
-        const BASE_COOLDOWN_IN_SECS: f32 = 5.;
+        const BASE_COOLDOWN_IN_SECS: f32 = 100.;
         const BASE_SPELL_CRITICAL: f32 = 5.;
         const BASE_SPELL_PROJECTILES: usize = 1;
         const BASE_SPELL_PIERCING: usize = 0;

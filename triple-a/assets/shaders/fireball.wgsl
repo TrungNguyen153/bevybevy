@@ -1,11 +1,4 @@
-// https://github.com/bevyengine/bevy/blob/73d7e89a18e4dd0f0d2ad2294028e6b84a611088/crates/bevy_sprite/src/mesh2d/mesh2d_vertex_output.wgsl
-// https://github.com/bevyengine/bevy/blob/73d7e89a18e4dd0f0d2ad2294028e6b84a611088/crates/bevy_render/src/globals.wgsl
 
-#import bevy_sprite::mesh2d_view_bindings::{view, globals}
-#import bevy_sprite::mesh2d_vertex_output::VertexOutput
-
-@group(2) @binding(0) var<uniform> canvas_width: f32;
-@group(2) @binding(1) var<uniform> canvas_height: f32;
 
 fn random2(st: vec2<f32>, seed: f32) -> vec2<f32> {
     let st2 = vec2<f32>( dot(st,vec2<f32>(127.1,311.7)),
@@ -72,59 +65,72 @@ fn rotate2D(theta: f32) -> mat2x2<f32> {
     return mat2x2<f32>(c, s, -s, c);
 }
 
-fn sdfCircle(p: vec2<f32>, r: f32) -> f32 {
+// https://iquilezles.org/articles/distfunctions2d/
+// Begin SDFs
+fn sdCircle(p: vec2<f32>, r: f32) -> f32 {
     return length(p) - r;
 }
 
+// distance from P to line AB
+fn sdSegment(p: vec2<f32>, a: vec2<f32>, b: vec2<f32>) -> f32
+{
+    let pa = p-a;
+    let ba = b-a;
+    let h = clamp( dot(pa,ba)/dot(ba,ba), 0.0, 1.0 );
+    return length( pa - ba*h );
+}
+
+// End SDFs
+
+fn drawLine(uv: vec2<f32>, p1: vec2<f32>, p2: vec2<f32>, thickness: f32) -> vec3<f32>
+{
+    let d = sdSegment(uv, p1, p2) - thickness;
+    var col = vec3<f32>(1.0) - sign(d) * vec3<f32>(0.1, 0.4, 0.7);
+	//col *= 1.0 - exp(-3.0*abs(d));
+	//col *= 0.8 + 0.2*cos(120.0*d);
+	col = mix( col, vec3(1.0), 1.0-smoothstep(0.0 ,0.015 ,abs(d)) );
+    return col;
+}
+
+fn drawCircle(uv: vec2<f32>, radius: f32, colorInner: vec3<f32>, colorOuter: vec3<f32>) -> vec3<f32>
+{
+    let d = sdCircle(uv, radius);
+    if (d > 0) {
+        return colorOuter;
+    }
+    return colorInner;
+}
+
+// https://github.com/bevyengine/bevy/blob/73d7e89a18e4dd0f0d2ad2294028e6b84a611088/crates/bevy_sprite/src/mesh2d/mesh2d_vertex_output.wgsl
+// https://github.com/bevyengine/bevy/blob/73d7e89a18e4dd0f0d2ad2294028e6b84a611088/crates/bevy_render/src/globals.wgsl
+#import bevy_sprite::mesh2d_view_bindings::{view, globals}
+#import bevy_sprite::mesh2d_vertex_output::VertexOutput
+
+@group(2) @binding(0) var<uniform> iResolution: vec2<f32>;
 @fragment
 fn fragment(in: VertexOutput) -> @location(0) vec4<f32> {
     // vec4 shader:
     // xyzw
     // rgba
-    //
     let fragCoord = in.position.xy;
-    let iResolution = vec2<f32>(canvas_width, canvas_height);
     let iTime = globals.time;
 
     // calculate center
     var uv: vec2<f32> = in.uv;
+    // hold old uv center
     let uvX: f32 = uv.x;
-
-    uv = vec2<f32>(uv.x, 1 - uv.y);
-    
     uv = uv * 2.0 - 1.0;
-    
-    // uv *= rotate2D(3.14159/2.);
     uv.x *= iResolution.x / iResolution.y;
 
-    var uvFlame = uv + vec2<f32>(iTime * 2., 0.);
+    // learn:
+    // https://www.shadertoy.com/view/XsyGRW
 
-    let roughness = 0.675;
-    let detail = 4;
-    let scale = 4.0;
-    let lacunarity = 2.0;
+    let d = min(sdCircle(uv, 0.2), sdSegment(uv, vec2<f32>(0., 0.5), vec2<f32>(0., -.5)) - 0.01);
+    if (d > 0) {
+        return vec4<f32>(0., 0., 0., 1.);
+    }
+    // var col = drawLine(uv, vec2<f32>(0., 0.5), vec2<f32>(0., -.5), 0.);
+    // col = drawCircle(uv,);
 
-    var noise1d: f32 = fbm(24., uvFlame, scale, detail, roughness, lacunarity);
-    var noise3d: vec3<f32> = vec3<f32>(fbm(24., uvFlame, scale, detail, roughness, lacunarity), 
-                        fbm(12., uvFlame, scale, detail, roughness, lacunarity),
-                        fbm(33., uvFlame, scale, detail, roughness, lacunarity));
-
-    var lightFactor : f32 = clamp(map(uvX, 0.13, .87, 1., .06), .06, 1.);
-
-    var light: vec3<f32> = linearLight(vec3(uv * vec2(1., 1.), 0.), noise3d, lightFactor);
-    light = abs(light) - vec3<f32>(.75, 0., 0.);
-    light = max(light, vec3<f32>(0.));
-
-    var lightLength: f32 = length(light);
-    var fireball_grad : f32 = clamp(map(uvX, -.24, 0.82, 0.0, 0.27), 0.0, 0.27);
-    lightLength -= fireball_grad;
-    lightLength = step(lightLength, -.01);
-
-    noise1d *= uvX;
-    noise1d = mapStep(noise1d, .24, .77, .0, 2., 4.);
-    noise1d *= pow(uvX, 4.);
-
-    let color : vec3<f32> = mix(vec3<f32>(.33), vec3(1., .33, .068) * noise1d * 4., lightLength);
-
-    return vec4<f32>(color, 1.0);
+    return vec4<f32>(1.0);
 }
