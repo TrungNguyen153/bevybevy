@@ -3,11 +3,11 @@ pub mod fireball;
 use std::time::Duration;
 
 use bevy::prelude::*;
-use bevy::utils::hashbrown::HashMap;
+use bevy::{sprite::Material2dPlugin, utils::hashbrown::HashMap};
 
 use crate::{GameAssets, GameState, components::movement::Facing, player::Player};
 
-use self::fireball::spawn_fireball;
+use self::fireball::{CustomFireballShader, spawn_fireball};
 
 pub struct SpellPlugin;
 
@@ -21,6 +21,8 @@ impl Plugin for SpellPlugin {
             .register_type::<SpellCaster>()
             .register_type::<SpellModReduceCooldown>()
             .add_event::<CastSpellEvent>()
+            // load shader fireball
+            .add_plugins(Material2dPlugin::<CustomFireballShader>::default())
             .add_systems(
                 Update,
                 (
@@ -91,6 +93,8 @@ fn spawn_spell_projectiles(
     >,
     time: Res<Time>,
     assets: Res<GameAssets>,
+    mut meshes: ResMut<Assets<Mesh>>,
+    mut materials: ResMut<Assets<CustomFireballShader>>,
 ) {
     let delta = time.delta();
 
@@ -167,6 +171,8 @@ fn spawn_spell_projectiles(
         spawn_fireball(
             &mut command,
             &assets,
+            &mut meshes,
+            &mut materials,
             trasform.translation,
             facing,
             critical_change,

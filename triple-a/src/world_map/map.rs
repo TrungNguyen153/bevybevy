@@ -36,7 +36,7 @@ fn spawn_world_borders(mut commands: Commands) {
     // left
     commands.spawn((
         RigidBody::Static,
-        Collider::rectangle(10.0, 5120.0),
+        Collider::rectangle(12.0, 5120.0),
         GlobalTransform::default(),
         Transform::from_translation(Vec3::new(0.0, 2600.0, 0.0)),
     ));
@@ -44,7 +44,7 @@ fn spawn_world_borders(mut commands: Commands) {
     // right
     commands.spawn((
         RigidBody::Static,
-        Collider::rectangle(10.0, 5120.0),
+        Collider::rectangle(12.0, 5120.0),
         GlobalTransform::default(),
         Transform::from_translation(Vec3::new(5120.0, 2600.0, 0.0)),
     ));
@@ -52,7 +52,7 @@ fn spawn_world_borders(mut commands: Commands) {
     // bottom
     commands.spawn((
         RigidBody::Static,
-        Collider::rectangle(5120.0, 10.0),
+        Collider::rectangle(5120.0, 12.0),
         GlobalTransform::default(),
         Transform::from_translation(Vec3::new(2610.0, 55.0, 0.0)),
     ));
@@ -60,7 +60,7 @@ fn spawn_world_borders(mut commands: Commands) {
     // top
     commands.spawn((
         RigidBody::Static,
-        Collider::rectangle(5120.0, 10.0),
+        Collider::rectangle(5120.0, 12.0),
         GlobalTransform::default(),
         Transform::from_translation(Vec3::new(2610.0, 5120.0, 0.0)),
     ));
