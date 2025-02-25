@@ -143,7 +143,7 @@ fn spawn_spell_projectiles(
             cd -= reduce_cd.0;
         }
 
-        cd = cd.clamp(0.1, 10.);
+        cd = cd.clamp(0.1, 5000.);
 
         caster
             .cooldown_pool

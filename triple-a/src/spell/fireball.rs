@@ -90,6 +90,6 @@ impl Material2d for CustomFireballShader {
     }
 
     fn alpha_mode(&self) -> AlphaMode2d {
-        AlphaMode2d::Opaque
+        AlphaMode2d::Blend
     }
 }

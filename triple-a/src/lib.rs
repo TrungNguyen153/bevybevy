@@ -39,6 +39,7 @@ pub fn create_game() {
                 .set(ImagePlugin::default_nearest())
                 .set(AssetPlugin {
                     meta_check: AssetMetaCheck::Never,
+                    watch_for_changes_override: Some(true),
                     ..default()
                 })
                 .set(WindowPlugin {
