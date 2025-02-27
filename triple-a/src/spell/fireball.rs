@@ -31,8 +31,8 @@ pub fn spawn_fireball(
     piercing_count: usize,
 ) {
     for _ in 0..projectiles {
-        const CANVAS_WIDTH: f32 = 400.;
-        const CANVAS_HEIGHT: f32 = 200.;
+        const CANVAS_WIDTH: f32 = 200.;
+        const CANVAS_HEIGHT: f32 = 100.;
         command.spawn((
             // Sprite {
             //     image: assets.fireball_texture.clone(),
