@@ -5,6 +5,7 @@ mod assets;
 pub mod components;
 pub mod debug;
 pub mod events;
+pub mod particle;
 pub mod player;
 pub mod spell;
 mod ui;
@@ -71,6 +72,7 @@ pub fn create_game() {
             player::PlayerPlugin,
             spell::SpellPlugin,
             MouseWorldPlugin,
+            particle::ParticlePlugin,
         ))
         .run();
 }
