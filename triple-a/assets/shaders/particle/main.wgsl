@@ -18,4 +18,5 @@ fn init(@builtin(global_invocation_id) invocation_id: vec3<u32>) {
 }
 
 @compute @workgroup_size(WORKGROUP_SIZE)
-fn update(@builtin(global_invocation_id) invocation_id: vec3<u32>) {}
+fn update(@builtin(global_invocation_id) invocation_id: vec3<u32>) {
+}
