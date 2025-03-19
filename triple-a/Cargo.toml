@@ -3,6 +3,10 @@ name = "triple-a"
 version = "0.1.0"
 edition = "2024"
 
+[features]
+default = ["inspector"]
+inspector = ["dep:bevy-inspector-egui"]
+
 [dependencies]
 bevy = { workspace = true, features = ["file_watcher"] }
 bevy_asset_loader = { workspace = true, features = ["2d"] }
@@ -12,3 +16,4 @@ bevy_ecs_ldtk = { workspace = true, features = ["atlas"] }
 avian2d.workspace = true
 rand.workspace = true
 noisy_bevy.workspace = true
+bevy-inspector-egui = { workspace = true, optional = true }

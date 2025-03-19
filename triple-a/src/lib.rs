@@ -17,6 +17,9 @@ use bevy::asset::AssetMetaCheck;
 use bevy::prelude::*;
 use bevy::window::{PresentMode, Window, WindowMode, WindowResolution};
 
+#[cfg(feature = "inspector")]
+use bevy_inspector_egui::quick::WorldInspectorPlugin;
+
 use avian2d::prelude::*;
 use bevy_asset_loader::prelude::*;
 use bevy_trickfilm::Animation2DPlugin;
@@ -57,6 +60,8 @@ pub fn create_game() {
                 .build(),
             Animation2DPlugin,
             PhysicsPlugins::default(),
+            #[cfg(feature = "inspector")]
+            WorldInspectorPlugin::new(),
         ))
         .init_state::<GameState>()
         .add_loading_state(

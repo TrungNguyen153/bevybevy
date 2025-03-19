@@ -1,8 +1,10 @@
 pub mod particle_data;
+// pub mod particle_draw;
 
 use bevy::prelude::*;
 use bevy::render::{
     Render, RenderApp, RenderSet,
+    graph::CameraDriverLabel,
     render_asset::RenderAssets,
     render_graph::{RenderGraph, RenderLabel},
     render_resource::{binding_types::storage_buffer, *},
@@ -33,16 +35,16 @@ impl Plugin for ParticlePlugin {
                 Render,
                 prepare_bind_groups.in_set(RenderSet::PrepareBindGroups),
             );
+
+        let mut graph = render_app.world_mut().resource_mut::<RenderGraph>();
+        graph.add_node(ParticleLabel, ParticleNode);
+        graph.add_node_edge(ParticleLabel, CameraDriverLabel);
     }
 
     fn finish(&self, app: &mut App) {
         let render_app = app.sub_app_mut(RenderApp);
         render_app.insert_resource(GpuBuffers::new());
         render_app.init_resource::<ParticlePipelines>();
-
-        let mut graph = render_app.world_mut().resource_mut::<RenderGraph>();
-        graph.add_node(ParticleLabel, ParticleNode);
-        graph.add_node_edge(ParticleLabel, bevy::render::graph::CameraDriverLabel);
     }
 }
 
@@ -67,8 +69,11 @@ fn extract_effect_events(
 /// BindGroupLayout used for how we pass data layout into wgpu
 #[derive(Resource)]
 struct ParticlePipelines {
+    /// present for function will be called
     init_pipeline: CachedComputePipelineId,
+    /// present for function will be called
     update_pipeline: CachedComputePipelineId,
+    /// present for layout data passing into shader
     bind_group_layout: BindGroupLayout,
 }
 
@@ -97,7 +102,7 @@ impl FromWorld for ParticlePipelines {
             pipeline_cache.queue_compute_pipeline(ComputePipelineDescriptor {
                 label: Some(entry_label.into()),
                 layout: vec![bind_group_layout.clone()],
-                push_constant_ranges: Vec::new(),
+                push_constant_ranges: vec![],
                 shader: shader.clone(),
                 shader_defs: vec![],
                 entry_point: entry_label.into(),
@@ -173,8 +178,8 @@ impl bevy::render::render_graph::Node for ParticleNode {
         render_context: &mut bevy::render::renderer::RenderContext<'w>,
         world: &'w World,
     ) -> Result<(), bevy::render::render_graph::NodeRunError> {
-        let bind_groups = world.resource::<ParticleBindGroups>();
         let pipeline_cache = world.resource::<PipelineCache>();
+        let bind_groups = world.resource::<ParticleBindGroups>();
         let pipeline = world.resource::<ParticlePipelines>();
         let buffers = world.resource::<GpuBuffers>();
 
