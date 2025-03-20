@@ -4,11 +4,6 @@ use bevy::{prelude::*, render::render_resource::*};
 pub struct Particle {
     pub position: Vec2,
     pub velocity: Vec2,
-    pub color: ColorId,
+    pub color: u32,
     pub padding: u32,
-}
-
-#[derive(ShaderType, Default, Debug, Clone, Copy, PartialEq, Eq, Hash)]
-pub struct ColorId {
-    pub id: u32,
 }
