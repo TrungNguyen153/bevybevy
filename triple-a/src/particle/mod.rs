@@ -87,7 +87,6 @@ fn extract_effect_events(
         buffers.particles.add();
         buffers.particles.add();
         buffers.particles.write_buffer(&device);
-        device.poll(Maintain::Wait);
     } else {
         let k = buffers
             .particles
